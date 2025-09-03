@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
@@ -24,20 +25,27 @@ import androidx.navigation.compose.rememberNavController
 import com.olivia.localcultureandlanguagehelper.data.AuthViewModel
 import com.olivia.localcultureandlanguagehelper.navigation.*
 
-/* 🎨 Updated theme colors */
+/* 🎨 Theme colors */
 private val TopBarColor = Color(0xFFD32F2F)   // Deep Red
-private val BottomBarColor = Color(0xFF212121) // Dark Gray/Almost Black
+private val BottomBarColor = Color(0xFF121212) // Darker background
+
+// 🎨 Card gradient brushes
+private val CardGradient1 = Brush.verticalGradient(listOf(Color(0xFFD32F2F), Color.Black))
+private val CardGradient2 = Brush.verticalGradient(listOf(Color(0xFFE53935), Color(0xFF212121)))
+private val CardGradient3 = Brush.verticalGradient(listOf(Color(0xFFB71C1C), Color(0xFF000000)))
+private val CardGradient4 = Brush.verticalGradient(listOf(Color(0xFFFF5252), Color(0xFF1C1C1C)))
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(navController: NavHostController) {
-    // ✅ Bottom Nav Items (removed "List")
-    val navItems = listOf("Home", "Learn", "Facts", "Quiz",)
+    val navItems = listOf("Home", "Learn", "Facts", "Quiz")
     val navIcons = listOf(
         Icons.Default.Home,
         Icons.Default.Person,
-        Icons.Default.Settings,
-        Icons.Default.ExitToApp // temporary for quiz
+        Icons.Default.ExitToApp,
+        Icons.Default.Edit
+
+
     )
     val navRoutes = listOf(
         ROUTE_HOME,
@@ -63,9 +71,6 @@ fun HomeScreen(navController: NavHostController) {
                     IconButton(onClick = { navController.navigate(ROUTE_USERPROFILE) }) {
                         Icon(Icons.Default.Person, contentDescription = "Profile")
                     }
-                    IconButton(onClick = { navController.navigate(ROUTE_SETTINGS) }) {
-                        Icon(Icons.Default.Settings, contentDescription = "Settings")
-                    }
                 }
             )
         },
@@ -87,20 +92,19 @@ fun HomeScreen(navController: NavHostController) {
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { authViewModel.logout() },
-                containerColor = TopBarColor, // Match topbar red
+                containerColor = TopBarColor,
                 contentColor = Color.White
             ) {
                 Icon(Icons.Default.ExitToApp, contentDescription = "Logout")
             }
         }
     ) { innerPadding ->
-        // 🔴⚫ Red–Black Gradient Background
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
                     Brush.verticalGradient(
-                        listOf(Color(0xFFD32F2F), Color.Black) // Red → Black
+                        listOf(Color.Black, Color(0xFFB71C1C))
                     )
                 )
                 .padding(innerPadding)
@@ -115,7 +119,7 @@ fun HomeScreen(navController: NavHostController) {
                     HomeCard(
                         title = "Learn Phrases",
                         description = "Translate and listen to words in multiple languages",
-                        backgroundColor = Color(0xFF81D4FA),
+                        backgroundBrush = CardGradient1,
                         onClick = { navController.navigate(ROUTE_LEARNPHRASES) }
                     )
                 }
@@ -123,7 +127,7 @@ fun HomeScreen(navController: NavHostController) {
                     HomeCard(
                         title = "Interactive Quiz",
                         description = "Test your knowledge of languages and culture",
-                        backgroundColor = Color(0xFFAED581),
+                        backgroundBrush = CardGradient2,
                         onClick = { navController.navigate(ROUTE_INTERACTIVEQUIZ) }
                     )
                 }
@@ -131,7 +135,7 @@ fun HomeScreen(navController: NavHostController) {
                     HomeCard(
                         title = "Cultural Facts",
                         description = "Learn interesting facts about different communities",
-                        backgroundColor = Color(0xFFCE93D8),
+                        backgroundBrush = CardGradient3,
                         onClick = { navController.navigate(ROUTE_CULTURALFACTS) }
                     )
                 }
@@ -139,7 +143,7 @@ fun HomeScreen(navController: NavHostController) {
                     HomeCard(
                         title = "Add Culture",
                         description = "Events, festivals, cultural facts & community uploads",
-                        backgroundColor = Color(0xFFFFF59D),
+                        backgroundBrush = CardGradient4,
                         onClick = { navController.navigate(ROUTE_ADDCULTURE) }
                     )
                 }
@@ -152,7 +156,7 @@ fun HomeScreen(navController: NavHostController) {
 fun HomeCard(
     title: String,
     description: String,
-    backgroundColor: Color,
+    backgroundBrush: Brush,
     onClick: () -> Unit
 ) {
     Card(
@@ -161,27 +165,31 @@ fun HomeCard(
             .heightIn(min = 140.dp)
             .clickable { onClick() },
         shape = RoundedCornerShape(24.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-        colors = CardDefaults.cardColors(containerColor = backgroundColor)
+        elevation = CardDefaults.cardElevation(defaultElevation = 12.dp)
     ) {
-        Column(
+        Box(
             modifier = Modifier
+                .background(backgroundBrush)
                 .padding(20.dp)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceBetween
+                .fillMaxSize()
         ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
-            )
-            Text(
-                text = description,
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Medium,
-                color = Color.DarkGray
-            )
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+                Text(
+                    text = description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium,
+                    color = Color.LightGray
+                )
+            }
         }
     }
 }

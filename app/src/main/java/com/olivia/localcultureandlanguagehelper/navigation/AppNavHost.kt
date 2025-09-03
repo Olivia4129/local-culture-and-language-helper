@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.olivia.localcultureandlanguagehelper.Onbording.OnboardingScreen
+
 import com.olivia.localcultureandlanguagehelper.navigation.*
 import com.olivia.localcultureandlanguagehelper.ui.screens.AddCultureScreen
 import com.olivia.localcultureandlanguagehelper.ui.screens.loginscreen.LoginScreen
@@ -15,6 +16,7 @@ import com.olivia.localcultureandlanguagehelper.ui.theme.culturescreen.CulturalF
 import com.olivia.localcultureandlanguagehelper.ui.theme.culturescreen.DisplayCulturesScreen
 import com.olivia.localcultureandlanguagehelper.ui.theme.culturescreen.InteractiveQuizScreen
 import com.olivia.localcultureandlanguagehelper.ui.theme.culturescreen.LearnPhrasesScreen
+import com.olivia.localcultureandlanguagehelper.ui.theme.culturescreen.ProfileScreen
 import com.olivia.localcultureandlanguagehelper.ui.theme.culturescreen.UpdateCultureScreen
 import com.olivia.localcultureandlanguagehelper.ui.theme.homescreen.HomeScreen
 
@@ -54,7 +56,7 @@ fun AppNavHost(
             AddCultureScreen(navController = navController)
         }
         composable(ROUTE_VIEWCULTURE) {
-            AddCultureScreen(navController = navController)
+            DisplayCulturesScreen(navController = navController)
         }
         composable("$ROUTE_UPDATECULTURE/{studentId}") { backStackEntry ->
             val studentId = backStackEntry.arguments?.getString("studentId") ?: ""
@@ -63,11 +65,12 @@ fun AppNavHost(
         composable(ROUTE_DELETECULTURE) {
             AddCultureScreen(navController = navController)
         }
-        composable(ROUTE_VIEWCULTURE) {
-            DisplayCulturesScreen(navController = navController) // ✅ fixed here
-        }
         composable(ROUTE_ONBOARDING) {
             OnboardingScreen(navController = navController)
         }
+        composable(ROUTE_USERPROFILE) {
+            ProfileScreen(navController = navController)
+        }
+
     }
 }

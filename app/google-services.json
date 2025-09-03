@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "7950587459",
-    "project_id": "local-culture-323c1",
-    "storage_bucket": "local-culture-323c1.firebasestorage.app"
+    "project_number": "1064538799572",
+    "project_id": "local-culture-b36e6",
+    "storage_bucket": "local-culture-b36e6.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:7950587459:android:a863b1252e7e11cd9226f6",
+        "mobilesdk_app_id": "1:1064538799572:android:f3150874a6fad075bf6a41",
         "android_client_info": {
           "package_name": "com.olivia.localcultureandlanguagehelper"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCyEhpxC-3Ae88-crDkbYj0feBfq1CZIBg"
+          "current_key": "AIzaSyBhngxo2BVXQl_rtZoouoi36Im-4F2oJCM"
         }
       ],
       "services": {

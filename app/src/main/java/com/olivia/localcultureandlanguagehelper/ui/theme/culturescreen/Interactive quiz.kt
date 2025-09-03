@@ -7,6 +7,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -58,12 +59,16 @@ fun InteractiveQuizScreen(navController: NavHostController) {
 
     val currentQuestion = questions[currentQuestionIndex]
 
+    val gradientBackground = Brush.verticalGradient(
+        colors = listOf(Color(0xFFB71C1C), Color.Black) // red to black gradient
+    )
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Kenyan Tribes Quiz", color = Color.White) },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Black, // Black AppBar
+                    containerColor = Color.Black,
                     titleContentColor = Color.White
                 )
             )
@@ -72,95 +77,127 @@ fun InteractiveQuizScreen(navController: NavHostController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFFB71C1C)) // Deep Red background
+                .background(gradientBackground)
                 .padding(padding)
                 .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (!showResult) {
-                Text(
-                    text = "Question ${currentQuestionIndex + 1} of ${questions.size}",
-                    fontSize = 18.sp,
-                    color = Color.Black
-                )
-                Text(
-                    text = currentQuestion.question,
-                    fontSize = 20.sp,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = Color.White
-                )
-
-                currentQuestion.options.forEach { option ->
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .selectable(
-                                selected = (option == selectedOption),
-                                onClick = { selectedOption = option }
-                            )
-                            .padding(8.dp)
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color(0xFF8B0000), // Darker red card
+                        contentColor = Color.White
+                    ),
+                    elevation = CardDefaults.cardElevation(8.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        RadioButton(
-                            selected = option == selectedOption,
-                            onClick = { selectedOption = option },
-                            colors = RadioButtonDefaults.colors(
-                                selectedColor = Color.Black,
-                                unselectedColor = Color.White
-                            )
+                        Text(
+                            text = "Question ${currentQuestionIndex + 1} of ${questions.size}",
+                            fontSize = 16.sp,
+                            color = Color.LightGray
                         )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(option, color = Color.White)
+                        Text(
+                            text = currentQuestion.question,
+                            fontSize = 20.sp,
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Color.White
+                        )
+
+                        currentQuestion.options.forEach { option ->
+                            Row(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .selectable(
+                                        selected = (option == selectedOption),
+                                        onClick = { selectedOption = option }
+                                    )
+                                    .padding(vertical = 4.dp)
+                            ) {
+                                RadioButton(
+                                    selected = option == selectedOption,
+                                    onClick = { selectedOption = option },
+                                    colors = RadioButtonDefaults.colors(
+                                        selectedColor = Color.White,
+                                        unselectedColor = Color.LightGray
+                                    )
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(option, color = Color.White)
+                            }
+                        }
+
+                        Button(
+                            onClick = {
+                                if (selectedOption == currentQuestion.correctAnswer) {
+                                    score++
+                                }
+                                if (currentQuestionIndex < questions.size - 1) {
+                                    currentQuestionIndex++
+                                    selectedOption = null
+                                } else {
+                                    showResult = true
+                                }
+                            },
+                            enabled = selectedOption != null,
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.Black,
+                                contentColor = Color.White
+                            )
+                        ) {
+                            Text(if (currentQuestionIndex < questions.size - 1) "Next" else "Finish")
+                        }
                     }
                 }
-
-                Button(
-                    onClick = {
-                        if (selectedOption == currentQuestion.correctAnswer) {
-                            score++
-                        }
-                        if (currentQuestionIndex < questions.size - 1) {
-                            currentQuestionIndex++
-                            selectedOption = null
-                        } else {
-                            showResult = true
-                        }
-                    },
-                    enabled = selectedOption != null,
-                    modifier = Modifier.padding(top = 16.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Black,
-                        contentColor = Color.White
-                    )
-                ) {
-                    Text("Next")
-                }
             } else {
-                Text(
-                    text = "Quiz Completed!",
-                    fontSize = 24.sp,
-                    style = MaterialTheme.typography.titleLarge,
-                    color = Color.White
-                )
-                Text(
-                    text = "Your Score: $score / ${questions.size}",
-                    fontSize = 20.sp,
-                    color = Color.White
-                )
-                Button(
-                    onClick = {
-                        currentQuestionIndex = 0
-                        selectedOption = null
-                        score = 0
-                        showResult = false
-                    },
-                    modifier = Modifier.padding(top = 16.dp),
-                    colors = ButtonDefaults.buttonColors(
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
                         containerColor = Color.Black,
                         contentColor = Color.White
-                    )
+                    ),
+                    elevation = CardDefaults.cardElevation(8.dp)
                 ) {
-                    Text("Restart Quiz")
+                    Column(
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "🎉 Quiz Completed!",
+                            fontSize = 24.sp,
+                            style = MaterialTheme.typography.titleLarge,
+                            color = Color(0xFFFF5252) // bright red accent
+                        )
+                        Text(
+                            text = "Your Score: $score / ${questions.size}",
+                            fontSize = 20.sp,
+                            color = Color.White
+                        )
+                        Button(
+                            onClick = {
+                                currentQuestionIndex = 0
+                                selectedOption = null
+                                score = 0
+                                showResult = false
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFFB71C1C),
+                                contentColor = Color.White
+                            )
+                        ) {
+                            Text("Restart Quiz")
+                        }
+                    }
                 }
             }
         }

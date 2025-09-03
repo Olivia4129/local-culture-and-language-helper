@@ -80,6 +80,8 @@ dependencies {
     // --- ViewModel ---
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
     implementation(libs.firebase.database)
+    implementation(libs.firebase.auth)
+    implementation(libs.androidx.runtime.livedata)
 
     // --- Testing ---
     testImplementation(libs.junit)

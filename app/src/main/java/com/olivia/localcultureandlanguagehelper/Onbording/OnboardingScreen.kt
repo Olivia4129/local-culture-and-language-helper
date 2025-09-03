@@ -21,6 +21,7 @@ import androidx.navigation.NavHostController
 import com.olivia.localcultureandlanguagehelper.data.onboardingItems
 import com.olivia.localcultureandlanguagehelper.navigation.ROUTE_LOGIN
 import com.olivia.localcultureandlanguagehelper.navigation.ROUTE_ONBOARDING
+import com.olivia.localcultureandlanguagehelper.navigation.ROUTE_REGISTER
 import kotlinx.coroutines.launch
 
 @Composable
@@ -127,7 +128,7 @@ fun OnboardingScreen(navController: NavHostController) {
             Button(
                 onClick = {
                     if (pagerState.currentPage == onboardingItems.lastIndex) {
-                        navController.navigate(ROUTE_LOGIN) {
+                        navController.navigate(ROUTE_REGISTER) {
                             popUpTo(ROUTE_ONBOARDING) { inclusive = true }
                         }
                     } else {

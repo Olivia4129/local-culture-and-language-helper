@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
@@ -15,14 +16,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.google.firebase.auth.FirebaseAuth
 import com.olivia.localcultureandlanguagehelper.R
 import com.olivia.localcultureandlanguagehelper.data.AuthViewModel
 
@@ -34,149 +37,187 @@ fun RegisterScreen(navController: NavHostController) {
     var confirmPassword by remember { mutableStateOf("") }
     var error by remember { mutableStateOf("") }
 
-    val auth = FirebaseAuth.getInstance()
+    // 🎨 Themed colors
+    val deepRed = Color(0xFFB71C1C)
+    val deepBlack = Color(0xFF121212)
 
-    // Background gradient (red → black)
+    // Background gradient
     val gradient = Brush.verticalGradient(
-        colors = listOf(Color(0xFFB71C1C), Color.Black) // deep red to black
+        colors = listOf(deepRed, deepBlack)
     )
 
-    Column(
+    val context = LocalContext.current
+    val authViewModel = remember { AuthViewModel(navController, context) }
+
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(gradient)
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+            .background(gradient),
+        contentAlignment = Alignment.Center
     ) {
-        Spacer(modifier = Modifier.height(40.dp))
-
-        Text(
-            "Register",
-            style = MaterialTheme.typography.headlineMedium,
-            color = Color.Blue
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Rounded Logo
-        Box(
+        Card(
             modifier = Modifier
-                .size(100.dp)
-                .clip(CircleShape) // makes it round
+                .padding(16.dp)
+                .fillMaxWidth(),
+            shape = RoundedCornerShape(16.dp),
+            elevation = CardDefaults.cardElevation(8.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.1f))
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.logo_culture),
-                contentDescription = "App Logo",
-                modifier = Modifier.fillMaxSize()
-            )
-        }
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // Title
+                Text(
+                    text = "REGISTER",
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.ExtraBold
+                    ),
+                    color = Color.Blue,
+                )
 
-        Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-        Text(
-            text = "Create your new account below",
-            style = MaterialTheme.typography.bodyMedium,
-            color = Color.White
-        )
+                // 🌟 Welcoming text moved below the main title
+                Text(
+                    text = "Welcome! Discover and enjoy different cultures",
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontWeight = FontWeight.SemiBold,
+                        fontStyle = FontStyle.Italic
+                    ),
+                    color = Color.White
+                )
 
-        Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
-        OutlinedTextField(
-            value = name,
-            onValueChange = { name = it },
-            label = { Text("Name", color = Color.White) },
-            leadingIcon = { Icon(Icons.Default.Person, contentDescription = "Name", tint = Color.White) },
-            modifier = Modifier.fillMaxWidth(),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedTextColor = Color.White,
-                unfocusedTextColor = Color.White,
-                focusedBorderColor = Color.White,
-                unfocusedBorderColor = Color.White,
-                cursorColor = Color.White
-            )
-        )
+                // Logo
+                Box(
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(CircleShape)
+                        .background(Color.White),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.logo_culture),
+                        contentDescription = "App Logo",
+                        modifier = Modifier
+                            .size(80.dp)
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop
+                    )
+                }
 
-        Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Email", color = Color.White) },
-            leadingIcon = { Icon(Icons.Default.Email, contentDescription = "Email", tint = Color.White) },
-            modifier = Modifier.fillMaxWidth(),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedTextColor = Color.White,
-                unfocusedTextColor = Color.White,
-                focusedBorderColor = Color.White,
-                unfocusedBorderColor = Color.White,
-                cursorColor = Color.White
-            )
-        )
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text("Name", color = Color.White) },
+                    leadingIcon = {
+                        Icon(Icons.Default.Person, contentDescription = "Name", tint = Color.White)
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = deepRed,
+                        unfocusedBorderColor = Color.LightGray,
+                        focusedLabelColor = deepRed,
+                        cursorColor = deepRed,
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White
+                    )
+                )
 
-        Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Password", color = Color.White) },
-            leadingIcon = { Icon(Icons.Default.Lock, contentDescription = "Password", tint = Color.White) },
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth(),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedTextColor = Color.White,
-                unfocusedTextColor = Color.White,
-                focusedBorderColor = Color.White,
-                unfocusedBorderColor = Color.White,
-                cursorColor = Color.White
-            )
-        )
+                OutlinedTextField(
+                    value = email,
+                    onValueChange = { email = it },
+                    label = { Text("Email", color = Color.White) },
+                    leadingIcon = {
+                        Icon(Icons.Default.Email, contentDescription = "Email", tint = Color.White)
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = deepRed,
+                        unfocusedBorderColor = Color.LightGray,
+                        focusedLabelColor = deepRed,
+                        cursorColor = deepRed,
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White
+                    )
+                )
 
-        Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-        OutlinedTextField(
-            value = confirmPassword,
-            onValueChange = { confirmPassword = it },
-            label = { Text("Confirm Password", color = Color.White) },
-            leadingIcon = { Icon(Icons.Default.Lock, contentDescription = "Confirm Password", tint = Color.White) },
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth(),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedTextColor = Color.White,
-                unfocusedTextColor = Color.White,
-                focusedBorderColor = Color.White,
-                unfocusedBorderColor = Color.White,
-                cursorColor = Color.White
-            )
-        )
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    label = { Text("Password", color = Color.White) },
+                    leadingIcon = {
+                        Icon(Icons.Default.Lock, contentDescription = "Password", tint = Color.White)
+                    },
+                    visualTransformation = PasswordVisualTransformation(),
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = deepRed,
+                        unfocusedBorderColor = Color.LightGray,
+                        focusedLabelColor = deepRed,
+                        cursorColor = deepRed,
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White
+                    )
+                )
 
-        Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-        val context = LocalContext.current
-        val authViewModel = AuthViewModel(navController, context)
+                OutlinedTextField(
+                    value = confirmPassword,
+                    onValueChange = { confirmPassword = it },
+                    label = { Text("Confirm Password", color = Color.White) },
+                    leadingIcon = {
+                        Icon(Icons.Default.Lock, contentDescription = "Confirm Password", tint = Color.White)
+                    },
+                    visualTransformation = PasswordVisualTransformation(),
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = deepRed,
+                        unfocusedBorderColor = Color.LightGray,
+                        focusedLabelColor = deepRed,
+                        cursorColor = deepRed,
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White
+                    )
+                )
 
-        Button(
-            onClick = {
-                authViewModel.signup(name, email, password, confirmPassword)
-            },
-            modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.White,
-                contentColor = Color.Black
-            )
-        ) {
-            Text("Register")
-        }
+                Spacer(modifier = Modifier.height(16.dp))
 
-        if (error.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(error, color = Color.Yellow)
-        }
+                Button(
+                    onClick = {
+                        authViewModel.signup(name, email, password, confirmPassword)
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = deepRed,
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text("Register")
+                }
 
-        Spacer(modifier = Modifier.height(16.dp))
+                if (error.isNotEmpty()) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(error, color = Color.Yellow)
+                }
 
-        TextButton(onClick = { navController.navigate("login") }) {
-            Text("Already have an account? Login", color = Color.White)
+                Spacer(modifier = Modifier.height(16.dp))
+
+                TextButton(onClick = { navController.navigate("login") }) {
+                    Text("Already have an account? Login", color = Color.White)
+                }
+            }
         }
     }
 }

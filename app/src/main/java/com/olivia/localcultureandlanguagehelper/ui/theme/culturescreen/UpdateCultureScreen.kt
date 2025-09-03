@@ -10,6 +10,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -60,20 +61,32 @@ fun UpdateCultureScreen(
         if (uri != null) imageUri = uri
     }
 
+    // Gradient for the whole screen
+    val gradientBackground = Modifier
+        .fillMaxSize()
+        .background(
+            brush = Brush.verticalGradient(
+                colors = listOf(Color.Red, Color.Black)
+            )
+        )
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Update Culture", color = Color.White) },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFF4CAF50))
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Transparent
+                )
             )
-        }
+        },
+        containerColor = Color.Transparent, // Make scaffold itself transparent to see gradient
+        modifier = gradientBackground
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .padding(paddingValues)
                 .padding(16.dp)
-                .fillMaxSize()
-                .background(Color.White),
+                .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             OutlinedTextField(
@@ -138,7 +151,6 @@ fun UpdateCultureScreen(
             Button(
                 onClick = {
                     val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
-
                     cultureViewModel.updateCulture(
                         cultureId = cultureId,
                         name = name,
@@ -146,7 +158,7 @@ fun UpdateCultureScreen(
                         description = description,
                         event = event,
                         imageUri = imageUri,
-                        currentUserId = currentUserId // ✅ pass userId
+                        currentUserId = currentUserId
                     )
                     navController.popBackStack()
                 },
@@ -154,7 +166,6 @@ fun UpdateCultureScreen(
             ) {
                 Text("Update Culture")
             }
-
         }
     }
 }

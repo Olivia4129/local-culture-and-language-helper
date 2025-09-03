@@ -3,6 +3,7 @@ package com.olivia.localcultureandlanguagehelper.ui.theme.culturescreen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -84,7 +85,7 @@ fun CulturalFactsScreen(navController: NavHostController) {
             TopAppBar(
                 title = { Text("Kenyan Cultural Facts", color = Color.White) },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Black // Black AppBar
+                    containerColor = Color.Black
                 )
             )
         }
@@ -94,7 +95,7 @@ fun CulturalFactsScreen(navController: NavHostController) {
                 .fillMaxSize()
                 .background(
                     Brush.verticalGradient(
-                        colors = listOf(Color.Red, Color.Black)
+                        colors = listOf(Color(0xFFB71C1C), Color.Black) // Deep Red → Black gradient
                     )
                 )
                 .padding(padding)
@@ -103,20 +104,41 @@ fun CulturalFactsScreen(navController: NavHostController) {
         ) {
             tribesCulture.forEach { tribe ->
                 item {
-                    Text(
-                        text = tribe.name,
-                        fontSize = 20.sp,
-                        color = Color.Red, // Tribe titles in Red
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    tribe.facts.forEach { fact ->
-                        Text(
-                            "• ${fact.fact}",
-                            color = Color.White // Facts in White for contrast
-                        )
-                    }
+                    TribeCard(tribe = tribe)
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun TribeCard(tribe: TribeCulture) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.1f)),
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+        ) {
+            Text(
+                text = tribe.name,
+                fontSize = 22.sp,
+                color = Color(0xFFB71C1C), // Deep red title
+                style = MaterialTheme.typography.titleMedium
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            tribe.facts.forEach { fact ->
+                Text(
+                    text = "• ${fact.fact}",
+                    color = Color.White,
+                    fontSize = 16.sp,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Spacer(modifier = Modifier.height(4.dp))
             }
         }
     }

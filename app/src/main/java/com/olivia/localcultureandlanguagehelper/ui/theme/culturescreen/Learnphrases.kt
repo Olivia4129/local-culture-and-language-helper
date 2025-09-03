@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import androidx.compose.foundation.shape.RoundedCornerShape
 
 data class Phrase(
     val english: String,
@@ -30,11 +31,11 @@ fun LearnPhrasesScreen(navController: NavHostController) {
         Tribe(
             name = "Kikuyu",
             phrases = listOf(
-                Phrase("Hello", "Wîhîî"),
-                Phrase("How are you?", "Wîgîî?"),
-                Phrase("Thank you", "Thengî"),
-                Phrase("Yes", "Îe"),
-                Phrase("No", "Ndî")
+                Phrase("Hello", "Wimwega"),
+                Phrase("How are you?", "Uhana atia?"),
+                Phrase("Thank you", "Thengio"),
+                Phrase("Yes", "Emi"),
+                Phrase("No", "Aca")
             )
         ),
         Tribe(
@@ -50,11 +51,11 @@ fun LearnPhrasesScreen(navController: NavHostController) {
         Tribe(
             name = "Luo",
             phrases = listOf(
-                Phrase("Hello", "Ongera"),
-                Phrase("How are you?", "Iti naki?"),
-                Phrase("Thank you", "Aheri"),
+                Phrase("Hello", "wachna"),
+                Phrase("How are you?", "idhi nade?"),
+                Phrase("Thank you", "erokamano"),
                 Phrase("Yes", "Ee"),
-                Phrase("No", "Koro")
+                Phrase("No", "adagi")
             )
         ),
         Tribe(
@@ -62,7 +63,7 @@ fun LearnPhrasesScreen(navController: NavHostController) {
             phrases = listOf(
                 Phrase("Hello", "Chebo"),
                 Phrase("How are you?", "Chepyos?"),
-                Phrase("Thank you", "Aiyabei"),
+                Phrase("Thank you", "kongoi mising"),
                 Phrase("Yes", "Eyo"),
                 Phrase("No", "Bore")
             )
@@ -104,7 +105,8 @@ fun LearnPhrasesScreen(navController: NavHostController) {
                         colors = CardDefaults.cardColors(
                             containerColor = Color(0xFFD32F2F) // Red card
                         ),
-                        elevation = CardDefaults.cardElevation(6.dp)
+                        shape = RoundedCornerShape(12.dp), // Rounded corners
+                        elevation = CardDefaults.cardElevation(12.dp) // Increased shadow
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
                             Text(

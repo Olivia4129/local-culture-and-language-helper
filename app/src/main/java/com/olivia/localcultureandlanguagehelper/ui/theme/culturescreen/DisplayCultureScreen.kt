@@ -9,7 +9,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.*
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.*
@@ -23,10 +22,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
+import com.google.firebase.database.FirebaseDatabase
 import com.olivia.localcultureandlanguagehelper.data.CultureViewModel
+import com.olivia.localcultureandlanguagehelper.data.AuthViewModel
 import com.olivia.localcultureandlanguagehelper.models.Culture
 import com.olivia.localcultureandlanguagehelper.navigation.ROUTE_ADDCULTURE
-import com.olivia.localcultureandlanguagehelper.navigation.ROUTE_DISPLAYCULTURE
 import com.olivia.localcultureandlanguagehelper.navigation.ROUTE_HOME
 import com.olivia.localcultureandlanguagehelper.navigation.ROUTE_UPDATECULTURE
 
@@ -38,8 +38,22 @@ fun DisplayCulturesScreen(navController: NavHostController) {
     val context = LocalContext.current
     val cultureViewModel = CultureViewModel(navController, context)
 
-    // Load cultures
+    // 🔹 State to hold admin status
+    var isAdmin by remember { mutableStateOf(false) }
+
+    // 🔹 Load user role and cultures
     LaunchedEffect(Unit) {
+        val authViewModel = AuthViewModel(navController, context)
+        val userId = authViewModel.mAuth.currentUser?.uid
+        if (userId != null) {
+            FirebaseDatabase.getInstance().getReference("Users")
+                .child(userId)
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    val role = snapshot.child("role").value?.toString() ?: "user"
+                    isAdmin = (role == "admin")
+                }
+        }
         cultureViewModel.allCultures(culture, cultures)
     }
 
@@ -48,12 +62,12 @@ fun DisplayCulturesScreen(navController: NavHostController) {
             TopAppBar(
                 title = { Text("Culture List", color = Color.White) },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF000000) // black top bar
+                    containerColor = Color.Red
                 )
             )
         },
         bottomBar = {
-            BottomCultureNavigationBar(navController)
+            BottomCultureNavigationBar(navController, isAdmin)
         }
     ) { padding ->
         LazyColumn(
@@ -70,7 +84,8 @@ fun DisplayCulturesScreen(navController: NavHostController) {
                 CultureItem(
                     culture = cult,
                     onEdit = { navController.navigate("$ROUTE_UPDATECULTURE/${cult.id}") },
-                    onDelete = { cultureViewModel.deleteCulture(cult.id!!) }
+                    onDelete = { cultureViewModel.deleteCulture(cult.id!!) },
+                    isAdmin = isAdmin
                 )
             }
         }
@@ -81,7 +96,8 @@ fun DisplayCulturesScreen(navController: NavHostController) {
 fun CultureItem(
     culture: Culture,
     onEdit: () -> Unit,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
+    isAdmin: Boolean = false
 ) {
     Card(
         modifier = Modifier
@@ -105,37 +121,41 @@ fun CultureItem(
             }
 
             // Culture Info
-            Text(culture.name, style = MaterialTheme.typography.titleMedium, color = Color.Black)
-            Text(culture.description, style = MaterialTheme.typography.bodyMedium, color = Color.DarkGray)
+            Text(culture.name, style = MaterialTheme.typography.titleMedium, color = Color.White)
+            Text(culture.description, style = MaterialTheme.typography.bodyMedium, color = Color.White)
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Buttons Row
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "Edit",
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .clickable { onEdit() }
-                )
-                Text(
-                    text = "Delete",
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .clickable { onDelete() }
-                )
+            // 🔹 Show Edit/Delete only for Admin
+            if (isAdmin) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "Edit",
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .clickable { onEdit() }
+                    )
+                    Text(
+                        text = "Delete",
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .clickable { onDelete() }
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-fun BottomCultureNavigationBar(navController: NavHostController) {
+fun BottomCultureNavigationBar(navController: NavHostController, isAdmin: Boolean) {
+    val currentDestination = navController.currentBackStackEntry?.destination?.route
+
     NavigationBar(
         containerColor = Color.Black,
         contentColor = Color.White
@@ -143,21 +163,30 @@ fun BottomCultureNavigationBar(navController: NavHostController) {
         NavigationBarItem(
             icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
             label = { Text("Home") },
-            selected = false,
-            onClick = { navController.navigate(ROUTE_HOME) }
+            selected = currentDestination == ROUTE_HOME,
+            onClick = {
+                if (currentDestination != ROUTE_HOME) {
+                    navController.navigate(ROUTE_HOME) {
+                        launchSingleTop = true
+                        popUpTo(ROUTE_HOME) { inclusive = true }
+                    }
+                }
+            }
         )
-        NavigationBarItem(
-            icon = { Icon(Icons.Default.Add, contentDescription = "Add") },
-            label = { Text("Add") },
-            selected = false,
-            onClick = { navController.navigate(ROUTE_ADDCULTURE) }
-        )
-        NavigationBarItem(
-            icon = { Icon(Icons.Default.List, contentDescription = "List") },
-            label = { Text("List") },
-            selected = false,
-            onClick = { navController.navigate(ROUTE_DISPLAYCULTURE) }
-        )
+        if (isAdmin) { // 🔹 Only show Add button for admin
+            NavigationBarItem(
+                icon = { Icon(Icons.Default.Add, contentDescription = "Add") },
+                label = { Text("Add") },
+                selected = currentDestination == ROUTE_ADDCULTURE,
+                onClick = {
+                    if (currentDestination != ROUTE_ADDCULTURE) {
+                        navController.navigate(ROUTE_ADDCULTURE) {
+                            launchSingleTop = true
+                        }
+                    }
+                }
+            )
+        }
     }
 }
 

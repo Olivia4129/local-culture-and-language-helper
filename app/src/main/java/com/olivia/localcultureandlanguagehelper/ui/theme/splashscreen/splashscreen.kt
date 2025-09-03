@@ -1,14 +1,13 @@
 package com.olivia.localcultureandlanguagehelper.ui.theme.screens.Splashscreen
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -30,10 +29,19 @@ fun SplashScreen(navController: NavHostController) {
 
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Magenta),
+            .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
+        // Background Image
+        Image(
+            painter = painterResource(id = R.drawable.flag),
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
+
+
+        // 🔹 Foreground Content (Logo + Text)
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Image(
                 painter = painterResource(id = R.drawable.logo_culture),
@@ -44,10 +52,8 @@ fun SplashScreen(navController: NavHostController) {
             Text(
                 text = "Welcome to my app",
                 fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
+                fontWeight = FontWeight.Bold
             )
         }
     }
 }
-

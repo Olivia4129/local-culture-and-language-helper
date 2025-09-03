@@ -2,8 +2,9 @@ package com.olivia.localcultureandlanguagehelper.data
 
 
 data class User(
-    val id: String = "",
-    val fullName: String = "",
+    val fullname: String = "",
     val email: String = "",
-    var userId:String="",
+    val password: String = "",
+    val uid: String = "",
+    val role: String = "user"   // <-- added role field
 )
