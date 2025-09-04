@@ -13,7 +13,6 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -37,6 +36,7 @@ import com.olivia.localcultureandlanguagehelper.data.CultureViewModel
 import com.olivia.localcultureandlanguagehelper.navigation.ROUTE_HOME
 import com.olivia.localcultureandlanguagehelper.navigation.ROUTE_ADDCULTURE
 import com.olivia.localcultureandlanguagehelper.navigation.ROUTE_VIEWCULTURE
+import com.olivia.localcultureandlanguagehelper.navigation.ROUTE_CULTURALFACTS   // 🔹 Added
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,12 +47,12 @@ fun AddCultureScreen(navController: NavHostController) {
     var event by remember { mutableStateOf("") }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
 
-    // Image picker
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         imageUri = uri
     }
+
     val context = LocalContext.current
     val cultureViewModel = CultureViewModel(navController, context)
 
@@ -64,11 +64,17 @@ fun AddCultureScreen(navController: NavHostController) {
                     containerColor = Color.Red
                 ),
                 actions = {
-                    IconButton(onClick = {}) {
-                        Icon(Icons.Default.Search, contentDescription = "search", tint = Color.White)
-                    }
-                    IconButton(onClick = {}) {
-                        Icon(Icons.Default.Settings, contentDescription = "settings", tint = Color.White)
+                    IconButton(
+                        onClick = {
+                            // 🔹 Navigate to Cultural Facts when search icon is clicked
+                            navController.navigate(ROUTE_CULTURALFACTS)
+                        }
+                    ) {
+                        Icon(
+                            Icons.Default.Search,
+                            contentDescription = "Go to Cultural Facts",
+                            tint = Color.White
+                        )
                     }
                 }
             )
@@ -78,16 +84,17 @@ fun AddCultureScreen(navController: NavHostController) {
                 containerColor = Color.Black,
                 contentColor = Color.White
             ) {
-                val navItems = listOf("Home", "Add Culture", "culture list")
+                val navItems = listOf("Home", "Add Culture", "Culture List")
                 val navIcons = listOf(Icons.Default.Home, Icons.Default.Person, Icons.Default.Menu)
                 val navRoutes = listOf(ROUTE_HOME, ROUTE_ADDCULTURE, ROUTE_VIEWCULTURE)
 
-                // Observe the current route
                 val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
                 navItems.forEachIndexed { index, item ->
                     NavigationBarItem(
-                        icon = { Icon(navIcons[index], contentDescription = item, tint = Color.White) },
+                        icon = {
+                            Icon(navIcons[index], contentDescription = item, tint = Color.White)
+                        },
                         label = { Text(item, color = Color.White) },
                         selected = currentRoute == navRoutes[index],
                         onClick = {
@@ -124,7 +131,6 @@ fun AddCultureScreen(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // Image upload preview
             Card(
                 shape = CircleShape,
                 elevation = CardDefaults.cardElevation(6.dp),
@@ -161,6 +167,7 @@ fun AddCultureScreen(navController: NavHostController) {
                     .padding(horizontal = 20.dp),
                 textStyle = LocalTextStyle.current.copy(color = Color.White)
             )
+
             Spacer(modifier = Modifier.height(10.dp))
 
             OutlinedTextField(
@@ -172,6 +179,7 @@ fun AddCultureScreen(navController: NavHostController) {
                     .padding(horizontal = 20.dp),
                 textStyle = LocalTextStyle.current.copy(color = Color.White)
             )
+
             Spacer(modifier = Modifier.height(10.dp))
 
             OutlinedTextField(
@@ -183,6 +191,7 @@ fun AddCultureScreen(navController: NavHostController) {
                     .padding(horizontal = 20.dp),
                 textStyle = LocalTextStyle.current.copy(color = Color.White)
             )
+
             Spacer(modifier = Modifier.height(10.dp))
 
             OutlinedTextField(
@@ -207,7 +216,6 @@ fun AddCultureScreen(navController: NavHostController) {
                         description = description,
                         event = event
                     )
-                    // reset fields
                     name = ""
                     tribe = ""
                     description = ""
@@ -217,7 +225,10 @@ fun AddCultureScreen(navController: NavHostController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Red, contentColor = Color.White)
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Red,
+                    contentColor = Color.White
+                )
             ) {
                 Text("Add Culture")
             }

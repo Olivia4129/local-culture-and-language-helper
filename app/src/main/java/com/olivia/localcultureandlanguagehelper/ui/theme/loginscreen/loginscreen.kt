@@ -55,8 +55,8 @@ fun LoginScreen(navController: NavHostController) {
                 .padding(16.dp)
                 .fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
-            elevation = CardDefaults.cardElevation(8.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.1f))
+            elevation = CardDefaults.cardElevation(3.dp), // 🔹 Thinner, smarter shadow
+            colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.08f)) // subtle glass effect
         ) {
             Column(
                 modifier = Modifier

@@ -29,6 +29,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.olivia.localcultureandlanguagehelper.R
 import com.olivia.localcultureandlanguagehelper.data.AuthViewModel
+import androidx.compose.ui.text.style.TextAlign
 
 @Composable
 fun RegisterScreen(navController: NavHostController) {
@@ -61,7 +62,11 @@ fun RegisterScreen(navController: NavHostController) {
                 .padding(16.dp)
                 .fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
-            elevation = CardDefaults.cardElevation(8.dp),
+            // 🔹 Very subtle shadow (almost flat, modern look)
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 1.dp,   // much smaller shadow
+                pressedElevation = 2.dp    // slight lift on press
+            ),
             colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.1f))
         ) {
             Column(
@@ -81,7 +86,7 @@ fun RegisterScreen(navController: NavHostController) {
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // 🌟 Centered welcoming text with medium size
+                // 🌟 Centered welcoming text
                 Text(
                     text = "Welcome! Discover and enjoy different cultures",
                     style = MaterialTheme.typography.titleMedium.copy(
@@ -91,7 +96,7 @@ fun RegisterScreen(navController: NavHostController) {
                     ),
                     color = Color.White,
                     modifier = Modifier.fillMaxWidth(),
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                    textAlign = TextAlign.Center
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))

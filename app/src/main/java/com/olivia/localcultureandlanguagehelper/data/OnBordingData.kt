@@ -11,7 +11,7 @@ val onboardingItems = listOf(
     OnboardingItem(
         title = "Welcome to Local Culture and Language Helper App",
         description = "Discover Kenyan's heritage through language traditions and culture.",
-        imageRes = R.drawable.food
+        imageRes = R.drawable.flag
     ),
     OnboardingItem(
         title = "For Cultures",
@@ -21,6 +21,7 @@ val onboardingItems = listOf(
     OnboardingItem(
         title = "For Viewers",
         description = "View ceremonies, traditions and believe of language, and check results.",
-        imageRes = R.drawable.kitenge
+        imageRes = R.drawable.fishing
     )
 )
+

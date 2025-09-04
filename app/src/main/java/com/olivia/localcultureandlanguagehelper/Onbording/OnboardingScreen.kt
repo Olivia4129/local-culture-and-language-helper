@@ -16,6 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.olivia.localcultureandlanguagehelper.data.onboardingItems
@@ -23,6 +25,9 @@ import com.olivia.localcultureandlanguagehelper.navigation.ROUTE_LOGIN
 import com.olivia.localcultureandlanguagehelper.navigation.ROUTE_ONBOARDING
 import com.olivia.localcultureandlanguagehelper.navigation.ROUTE_REGISTER
 import kotlinx.coroutines.launch
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 
 @Composable
 fun OnboardingScreen(navController: NavHostController) {
@@ -83,19 +88,28 @@ fun OnboardingScreen(navController: NavHostController) {
                     Image(
                         painter = painterResource(id = item.imageRes),
                         contentDescription = null,
-                        modifier = Modifier.size(200.dp)
+                        contentScale = ContentScale.Crop,   // ✅ ensure cropped nicely
+                        modifier = Modifier
+                            .size(200.dp)                  // ✅ force square
+                            .clip(CircleShape)             // ✅ make perfectly round
                     )
                     Spacer(modifier = Modifier.height(20.dp))
                     Text(
                         text = item.title,
-                        style = MaterialTheme.typography.headlineMedium,
-                        color = Color.White
+                        style = MaterialTheme.typography.headlineMedium.copy(
+                            fontWeight = FontWeight.Bold
+                        ),
+                        color = Color(0xFFFFC107),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     Text(
                         text = item.description,
                         style = MaterialTheme.typography.bodyLarge,
-                        color = Color.White
+                        color = Color.Yellow,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
             }
