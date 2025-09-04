@@ -1,6 +1,7 @@
 package com.olivia.localcultureandlanguagehelper.ui.theme.screens.Splashscreen
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,12 +17,14 @@ import androidx.navigation.NavHostController
 import com.olivia.localcultureandlanguagehelper.R
 import com.olivia.localcultureandlanguagehelper.navigation.ROUTE_ONBOARDING
 import com.olivia.localcultureandlanguagehelper.navigation.ROUTE_SPLASH
+import androidx.compose.ui.graphics.Color
 import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(navController: NavHostController) {
+    // Navigate to onboarding after delay
     LaunchedEffect(true) {
-        delay(2000) // 2-second splash duration
+        delay(2000) // 2 seconds
         navController.navigate(ROUTE_ONBOARDING) {
             popUpTo(ROUTE_SPLASH) { inclusive = true }
         }
@@ -29,31 +32,24 @@ fun SplashScreen(navController: NavHostController) {
 
     Box(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .background(Color(0xFFB71C1C)), // Solid deep red background
         contentAlignment = Alignment.Center
     ) {
-        // Background Image
-        Image(
-            painter = painterResource(id = R.drawable.flag),
-            contentDescription = null,
+        Column(
             modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
-        )
-
-
-        // 🔹 Foreground Content (Logo + Text)
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center // Center content vertically
+        ) {
+            // App Logo
             Image(
                 painter = painterResource(id = R.drawable.logo_culture),
                 contentDescription = "App Logo",
-                modifier = Modifier.size(150.dp)
+                modifier = Modifier.size(150.dp),
+                contentScale = ContentScale.Crop
             )
+
             Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = "Welcome to my app",
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold
-            )
         }
     }
 }

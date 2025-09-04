@@ -25,7 +25,7 @@ import androidx.navigation.compose.rememberNavController
 import com.olivia.localcultureandlanguagehelper.data.AuthViewModel
 import com.olivia.localcultureandlanguagehelper.navigation.*
 
-/* 🎨 Theme colors */
+// 🎨 Theme colors
 private val TopBarColor = Color(0xFFD32F2F)   // Deep Red
 private val BottomBarColor = Color(0xFF121212) // Darker background
 
@@ -44,8 +44,6 @@ fun HomeScreen(navController: NavHostController) {
         Icons.Default.Person,
         Icons.Default.ExitToApp,
         Icons.Default.Edit
-
-
     )
     val navRoutes = listOf(
         ROUTE_HOME,
@@ -57,6 +55,9 @@ fun HomeScreen(navController: NavHostController) {
     var selectedIndex by remember { mutableStateOf(0) }
     val context = LocalContext.current
     val authViewModel = AuthViewModel(navController, context)
+
+    // 🔹 State for logout confirmation dialog
+    var showLogoutDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -91,7 +92,7 @@ fun HomeScreen(navController: NavHostController) {
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { authViewModel.logout() },
+                onClick = { showLogoutDialog = true }, // Show confirmation dialog
                 containerColor = TopBarColor,
                 contentColor = Color.White
             ) {
@@ -149,6 +150,30 @@ fun HomeScreen(navController: NavHostController) {
                 }
             }
         }
+    }
+
+    // 🔹 Logout Confirmation Dialog
+    if (showLogoutDialog) {
+        AlertDialog(
+            onDismissRequest = { showLogoutDialog = false },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showLogoutDialog = false
+                        authViewModel.logout() // Perform logout
+                    }
+                ) {
+                    Text("Yes, Logout", color = Color.Red, fontWeight = FontWeight.Bold)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showLogoutDialog = false }) {
+                    Text("Cancel", color = Color.Gray)
+                }
+            },
+            title = { Text("Confirm Logout") },
+            text = { Text("Are you sure you want to logout from the app?") }
+        )
     }
 }
 
